@@ -478,7 +478,7 @@
 
   After that, daily changes happen in Google Sheets — NOT here.
 */
-const SHEET_CSV_URL = "";
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1-vXx__dmwoR45P3zYQp01p0jgvG_b3BzpuuT5B5gQ_A/export?format=csv";
 
 /*
   IMPORTANT SHEET FORMAT
@@ -737,11 +737,6 @@ async function loadData({manual=false} = {}){
   }
 
   try{
-    if(!SHEET_CSV_URL.trim()){
-      setData(parseSheet(SAMPLE_CSV), "Sample data");
-      return;
-    }
-
     /*
       Cache-busting query parameter is intentional:
       it tells the browser/proxy to request a fresh CSV instead of
@@ -765,7 +760,7 @@ async function loadData({manual=false} = {}){
     setData(data, "Google Sheet");
   }catch(error){
     console.error(error);
-    showError(`Unable to load the Google Sheet. ${error.message}`);
+    showError(`Unable to load the Google Sheet. Make sure the sheet is publicly readable. ${error.message}`);
   }finally{
     if(manual){
       btn.disabled = false;
