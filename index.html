@@ -630,9 +630,19 @@ function parseSheet(text){
     throw new Error("No date columns were found.");
   }
 
-  const dataRows = rows.slice(headerIndex + 1).filter(row => {
-    return row[0] && normalize(row[0]) !== "totals";
-  });
+  // Only rows between the Player header and the sheet's Totals/Legend
+  // belong to the bullpen table. The Google Sheet contains a visual
+  // "Pitch Count Legend" row below the players; it must never become a
+  // bullpen player.
+  const dataRows = [];
+  for(const row of rows.slice(headerIndex + 1)){
+    const first = normalize(row[0]);
+    if(!first) continue;
+    if(first === "totals" || first === "pitch count legend" || first === "legend"){
+      break;
+    }
+    dataRows.push(row);
+  }
 
   const players = dataRows.map(row => {
     const values = row.slice(1);
